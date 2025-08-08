@@ -96,6 +96,7 @@
             top: 70px;
             width: 100%;
             z-index: 999;
+            transition: all 0.3s ease;
         }
         
         .nav-content {
@@ -120,6 +121,100 @@
         .nav-item.active {
             background: var(--primary-orange);
             transform: translateY(-2px);
+        }
+        
+        /* Menu Hamburger para Mobile */
+        .menu-toggle {
+            display: none;
+            background: var(--primary-orange);
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            position: fixed;
+            right: 20px;
+            top: 15px;
+            z-index: 1001;
+        }
+        
+        .menu-toggle span {
+            display: block;
+            width: 25px;
+            height: 3px;
+            background: var(--white);
+            margin: 5px 0;
+            transition: 0.3s;
+        }
+        
+        .menu-toggle.active span:nth-child(1) {
+            transform: rotate(-45deg) translate(-5px, 6px);
+        }
+        
+        .menu-toggle.active span:nth-child(2) {
+            opacity: 0;
+        }
+        
+        .menu-toggle.active span:nth-child(3) {
+            transform: rotate(45deg) translate(-5px, -6px);
+        }
+        
+        /* Mobile Navigation Overlay */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+            
+            .nav {
+                position: fixed;
+                top: 0;
+                left: -100%;
+                width: 80%;
+                max-width: 300px;
+                height: 100vh;
+                background: var(--secondary-black);
+                transition: left 0.3s ease;
+                padding-top: 80px;
+                overflow-y: auto;
+            }
+            
+            .nav.active {
+                left: 0;
+                box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+            }
+            
+            .nav-content {
+                flex-direction: column;
+                gap: 5px;
+                padding: 20px;
+            }
+            
+            .nav-item {
+                display: block;
+                padding: 12px 20px;
+                margin: 5px 0;
+                border-radius: 10px;
+                font-size: 14px;
+            }
+            
+            /* Overlay quando menu está aberto */
+            .nav-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 998;
+            }
+            
+            .nav-overlay.active {
+                display: block;
+            }
+            
+            .main {
+                margin-top: 80px;
+            }
         }
         
         /* Conteúdo Principal */
@@ -524,8 +619,18 @@
         </div>
     </header>
 
+    <!-- Menu Toggle Button -->
+    <button class="menu-toggle" onclick="toggleMenu()">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <!-- Navigation Overlay -->
+    <div class="nav-overlay" onclick="toggleMenu()"></div>
+
     <!-- Navegação -->
-    <nav class="nav">
+    <nav class="nav" id="nav">
         <div class="container">
             <div class="nav-content">
                 <span class="nav-item active" onclick="showSection('overview', this)">Visão Geral</span>
@@ -1388,6 +1493,17 @@
     </footer>
 
     <script>
+        // Função para toggle do menu mobile
+        function toggleMenu() {
+            const nav = document.getElementById('nav');
+            const menuToggle = document.querySelector('.menu-toggle');
+            const overlay = document.querySelector('.nav-overlay');
+            
+            nav.classList.toggle('active');
+            menuToggle.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+        
         // Função para mostrar seções
         function showSection(sectionId, element) {
             // Esconder todas as seções
@@ -1409,6 +1525,17 @@
             });
             if (element) {
                 element.classList.add('active');
+            }
+            
+            // Fechar menu mobile após clicar em um item
+            const nav = document.getElementById('nav');
+            const menuToggle = document.querySelector('.menu-toggle');
+            const overlay = document.querySelector('.nav-overlay');
+            
+            if (window.innerWidth <= 768) {
+                nav.classList.remove('active');
+                menuToggle.classList.remove('active');
+                overlay.classList.remove('active');
             }
             
             // Scroll para o topo
